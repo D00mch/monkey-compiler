@@ -382,11 +382,11 @@ func testIdentifier(t *testing.T, exp ast.Expression, value string) bool {
 		t.Fatalf("exp not *ast.Identifier. Got %T", exp)
 		return false
 	}
-	if ident.Value != "foobar" {
+	if ident.Value != value {
 		t.Errorf("ident.Value not %s. Got %s", value, ident.Value)
 		return false
 	}
-	if ident.TokenLiteral() != "foobar" {
+	if ident.TokenLiteral() != value {
 		t.Errorf("ident.TokenLiteral not %s. Got %s",
 			value, ident.TokenLiteral())
 		return false
