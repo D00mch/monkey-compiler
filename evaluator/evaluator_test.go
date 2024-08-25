@@ -35,7 +35,7 @@ func TestEvalIntegerExpression(t *testing.T) {
 	}
 }
 
-func TestStringListeral(t *testing.T) {
+func TestStringLiteral(t *testing.T) {
 	input := `"Hello World!"`
 
 	evaluated := testEval(input)
