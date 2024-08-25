@@ -102,7 +102,7 @@ func applyFunction(fn object.Object, args []object.Object) object.Object {
 	}
 	envPlus := extendFunctionEnv(function, args)
 	evaluated := Eval(function.Body, envPlus)
-	return evaluated
+	return unwrapReturnValue(evaluated)
 }
 
 func extendFunctionEnv(
