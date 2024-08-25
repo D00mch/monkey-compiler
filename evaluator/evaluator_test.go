@@ -388,6 +388,14 @@ func TestBuiltinFunction(t *testing.T) {
 		{`last("")`, nil},
 		{`last([1,2])`, 2},
 		{`last("abc")`, "c"},
+		{`rest([])`, nil},
+		{`rest("")`, nil},
+		{`rest([1,2,3])`, []int{2, 3}},
+		{`rest("abc")`, "bc"},
+		{`rest(rest("abc"))`, "c"},
+		{`let a = [1,2]; push(a, 3)`, []int{1, 2, 3}},
+		{`push([], 1)`, []int{1}},
+		{`first(push([], "a"));`, "a"},
 	}
 
 	for _, tt := range tests {
@@ -398,6 +406,22 @@ func TestBuiltinFunction(t *testing.T) {
 			testNullObject(t, evaluated)
 		case int:
 			testIntegerObject(t, evaluated, int64(expected))
+		case []int:
+			array, ok := evaluated.(*object.Array)
+			if !ok {
+				t.Errorf("obj not Array. Got %T (%+v)", evaluated, evaluated)
+				continue
+			}
+
+			if len(array.Elements) != len(expected) {
+				t.Errorf("wrong num of elements. want=%d, got=%d",
+					len(expected), len(array.Elements))
+				continue
+			}
+
+			for i, expectedElem := range expected {
+				testIntegerObject(t, array.Elements[i], int64(expectedElem))
+			}
 		case string:
 			res, ok := evaluated.(*object.String)
 			if ok && res.Value == expected {
