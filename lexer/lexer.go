@@ -48,6 +48,9 @@ func (l *Lexer) NextToken() token.Token {
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	case '=':
 		if l.peekChar() == '=' {
 			l.readChar()
@@ -98,6 +101,17 @@ func isLetter(ch byte) bool {
 		ch == '_'
 }
 
+func (l *Lexer) readString() string {
+	position := l.postition + 1
+	for {
+		l.readChar()
+		if l.ch == '"' || l.ch == 0 {
+			break
+		}
+	}
+	return l.input[position:l.postition]
+}
+
 func (l *Lexer) readNumber() string {
 	position := l.postition
 	for isDigit(l.ch) {
@@ -118,6 +132,7 @@ func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 
+// readChar moves Lexer positions one step further and set char to the next
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
 		l.ch = 0
@@ -131,6 +146,6 @@ func (l *Lexer) readChar() {
 func (l *Lexer) peekChar() byte {
 	if l.readPosition >= len(l.input) {
 		return 0
-	} 
+	}
 	return l.input[l.readPosition]
 }

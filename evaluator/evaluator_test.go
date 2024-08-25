@@ -35,6 +35,33 @@ func TestEvalIntegerExpression(t *testing.T) {
 	}
 }
 
+func TestStringListeral(t *testing.T) {
+	input := `"Hello World!"`
+
+	evaluated := testEval(input)
+	str, ok := evaluated.(*object.String)
+	if !ok {
+		t.Fatalf("object is not String. Got %T (%+v)", evaluated, evaluated)
+	}
+	expected := input[1 : len(input)-1]
+	if str.Value != expected {
+		t.Errorf("String has wrong value. Got %q", expected)
+	}
+}
+
+func TestStringConcatenation(t *testing.T) {
+	input := `"Hello" + " " + "World!"`
+
+	evaluated := testEval(input)
+	str, ok := evaluated.(*object.String)
+	if !ok {
+		t.Fatalf("object is not String. Got %T (%+v)", evaluated, evaluated)
+	}
+	if str.Value != "Hello World!" {
+		t.Errorf("String has wrong value. Got %q", "Hello World!")
+	}
+}
+
 func TestEvalBooleanExpression(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -154,6 +181,10 @@ func TestErrorHandling(t *testing.T) {
 		{
 			"true + false;",
 			"unknown operator: BOOLEAN + BOOLEAN",
+		},
+		{
+			`"Hello" - "World!"`,
+			"unknown operator: STRING - STRING",
 		},
 		{
 			"true + false + true + false;",
