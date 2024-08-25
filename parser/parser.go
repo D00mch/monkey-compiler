@@ -291,7 +291,6 @@ func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
 }
 
 func (p *Parser) parseCallArguments(args []ast.Expression) []ast.Expression {
-	// TODO: rewrite with recursion
 	if p.peekTokenIs(token.RPAREN) {
 		p.nextToken()
 		return args
