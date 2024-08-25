@@ -17,6 +17,7 @@ const (
 	PRODUCT     // *
 	PREFIX      // -X or !X
 	CALL        // function(X)
+	INDEX       // array[index]
 )
 
 var precedences = map[token.TokenType]int{
@@ -29,6 +30,7 @@ var precedences = map[token.TokenType]int{
 	token.SLASH:    PRODUCT,
 	token.ASTERISK: PRODUCT,
 	token.LPAREN:   CALL,
+	token.LBRACKET: INDEX,
 }
 
 type (
@@ -76,6 +78,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.LT, p.parseInfixExpression)
 	p.registerInfix(token.GT, p.parseInfixExpression)
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
+	p.registerInfix(token.LBRACKET, p.parserIndexExpression)
 
 	// Read two tokens, so curToken and peekToken are both set
 	p.nextToken()
@@ -319,6 +322,16 @@ func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
 	return exp
 }
 
+func (p *Parser) parserIndexExpression(left ast.Expression) ast.Expression {
+	exp := &ast.IndexExpression{Token: p.curToken, Left: left}
+	p.nextToken()
+	exp.Index = p.parseExpression(LOWEST)
+	if !p.expectPeek(token.RBRACKET) {
+		return nil
+	}
+	return exp
+}
+
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	block := &ast.BlockStatement{Token: p.curToken}
 	block.Statements = []ast.Statement{}
@@ -375,6 +388,8 @@ func (p *Parser) peekTokenIs(t token.TokenType) bool {
 	return p.peekToken.Type == t
 }
 
+// expectPeek returns true if token is what we expected and move to the next token;
+// returns false and appends an error otherwise
 func (p *Parser) expectPeek(t token.TokenType) bool {
 	if p.peekTokenIs(t) {
 		p.nextToken()
