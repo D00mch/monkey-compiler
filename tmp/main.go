@@ -15,5 +15,7 @@ func main() {
 	fmt.Printf("%v", b1 == b2)
 
 	var result object.ReturnValue
-	fmt.Printf("%v", result.Type())
+	fmt.Printf("%v\n", result.Type())
+
+	fmt.Printf("%v\n", "bob"[0:1])
 }

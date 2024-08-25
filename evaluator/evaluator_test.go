@@ -378,15 +378,32 @@ func TestBuiltinFunction(t *testing.T) {
 		{`len("a b")`, 3},
 		{`len(1)`, "argument to `len` not supported, got INTEGER"},
 		{`len("a", "b")`, "wrong number of arguments. Got 2, want 1"},
+		{`len([1,2,"a","b", fn(a,b) {}])`, 5},
+		{`len([])`, 0},
+		{`first([])`, nil},
+		{`first("")`, nil},
+		{`first([1,2])`, 1},
+		{`first("abc")`, "a"},
+		{`last([])`, nil},
+		{`last("")`, nil},
+		{`last([1,2])`, 2},
+		{`last("abc")`, "c"},
 	}
 
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)
 
 		switch expected := tt.expected.(type) {
+		case nil:
+			testNullObject(t, evaluated)
 		case int:
 			testIntegerObject(t, evaluated, int64(expected))
 		case string:
+			res, ok := evaluated.(*object.String)
+			if ok && res.Value == expected {
+				continue
+			}
+
 			errObj, ok := evaluated.(*object.Error)
 			if !ok {
 				t.Errorf("object is not Error. Got %T (%+v)",
