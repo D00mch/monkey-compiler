@@ -1,6 +1,9 @@
 package evaluator
 
-import "dumch/monkey/object"
+import (
+	"dumch/monkey/object"
+	"fmt"
+)
 
 var builtins = map[string]*object.Builtin{
 	"len": {
@@ -115,6 +118,16 @@ var builtins = map[string]*object.Builtin{
 
 			return newError("argument to `push` must be ARRAY, got %s",
 				args[0].Type())
+		},
+	},
+
+	"puts": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			for _, arg := range args {
+				fmt.Println(arg.Inspect())
+			}
+
+			return NULL
 		},
 	},
 }
