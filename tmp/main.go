@@ -1,21 +1,28 @@
 package main
 
 import (
-	"dumch/monkey/object"
+	"dumch/monkey/code"
+	"encoding/binary"
 	"fmt"
 )
 
-type Bob struct {
-	name string
+func main() {
+
+	instruction := encode(1)
+	instruction1 := encode(256)
+	instruction2 := encode(512)
+	instruction3 := encode(65534)
+
+	fmt.Printf("B: %v\n", instruction)
+	fmt.Printf("B: %v\n", instruction1)
+	fmt.Printf("B: %v\n", instruction2)
+	fmt.Printf("B: %v\n", instruction3)
+
+	println(code.OpConstant)
 }
 
-func main() {
-	b1 := Bob {name: "Bob"}
-	b2 := Bob {name: "Bob"}
-	fmt.Printf("%v", b1 == b2)
-
-	var result object.ReturnValue
-	fmt.Printf("%v\n", result.Type())
-
-	fmt.Printf("%v\n", "bob"[0:1])
+func encode(n int) []byte {
+	instruction := make([]byte, 4)
+	binary.BigEndian.PutUint16(instruction, uint16(n))
+	return instruction
 }
