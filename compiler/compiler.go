@@ -4,6 +4,7 @@ import (
 	"dumch/monkey/ast"
 	"dumch/monkey/code"
 	"dumch/monkey/object"
+	"fmt"
 )
 
 type Compiler struct {
@@ -44,6 +45,13 @@ func (c *Compiler) Compile(node ast.Node) error {
 			return err
 		}
 
+		switch node.Operator {
+		case "+":
+			c.emit(code.OpAdd)
+		default:
+			return fmt.Errorf("unknown operator %s", node.Operator)
+		}
+
 	case *ast.IntegerLiteral:
 		integer := &object.Integer{Value: node.Value}
 		pos := c.addConstant(integer)
@@ -65,7 +73,7 @@ func (c *Compiler) emit(op code.Opcode, operands ...int) int {
 	return pos
 }
 
-// addInstruction and return added index 
+// addInstruction and return added index
 func (c *Compiler) addInstruction(ins []byte) int {
 	c.instructions = append(c.instructions, ins...)
 	return len(c.instructions) - 1
