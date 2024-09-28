@@ -19,12 +19,23 @@ type compilerTestCase struct {
 func TestIntegerArithmetic(t *testing.T) {
 	tests := []compilerTestCase{
 		{
-			input:             "1 + 2",
+			input:             "1 + 2", // base int arithmetics
 			expectedConstants: []any{1, 2},
 			expectedInstructions: []code.Instructions{
 				code.Make(code.OpConstant, 0),
 				code.Make(code.OpConstant, 1),
 				code.Make(code.OpAdd),
+				code.Make(code.OpPop),
+			},
+		},
+		{
+			input:             "1; 2", // test expresions stack pop
+			expectedConstants: []any{1, 2},
+			expectedInstructions: []code.Instructions{
+				code.Make(code.OpConstant, 0),
+				code.Make(code.OpPop),
+				code.Make(code.OpConstant, 1),
+				code.Make(code.OpPop),
 			},
 		},
 	}
@@ -63,7 +74,7 @@ func testConstants(
 	actual []object.Object,
 ) error {
 	t.Helper()
-	
+
 	if len(expected) != len(actual) {
 		return fmt.Errorf("wrong number of constants. got=%d, want=%d",
 			len(actual), len(expected))
