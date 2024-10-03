@@ -210,8 +210,9 @@ func (c *Compiler) setLastInstruction(op code.Opcode, pos int) {
 
 // addInstruction and return added index
 func (c *Compiler) addInstruction(ins []byte) int {
+	pos := len(c.instructions)
 	c.instructions = append(c.instructions, ins...)
-	return len(c.instructions) - 1
+	return pos
 }
 
 type Bytecode struct {
