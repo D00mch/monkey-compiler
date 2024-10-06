@@ -14,6 +14,9 @@ const (
 	OpConstant Opcode = iota
 	OpNull
 
+	OpGetGlobal
+	OpSetGlobal
+
 	// arithmetics
 	OpAdd
 	OpSub
@@ -46,6 +49,9 @@ type Definition struct {
 var definitions = map[Opcode]*Definition{
 	OpConstant: {"OpConstant", []int{2}},
 	OpNull:     {"OpNull", []int{}},
+
+	OpGetGlobal: {"OpGetGlobal", []int{2}},
+	OpSetGlobal: {"OpSetGlobal", []int{2}},
 
 	OpAdd: {"OpAdd", []int{}},
 	OpSub: {"OpSub", []int{}},
