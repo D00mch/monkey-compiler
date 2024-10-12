@@ -14,7 +14,7 @@ const (
 	OpConstant Opcode = iota
 	OpNull
 	OpArray
-	OpHash
+	OpHashMap
 
 	OpGetGlobal
 	OpSetGlobal
@@ -52,7 +52,7 @@ var definitions = map[Opcode]*Definition{
 	OpConstant: {"OpConstant", []int{2}},
 	OpNull:     {"OpNull", []int{}},
 	OpArray:    {"OpArray", []int{2}},
-	OpHash:     {"OpHash", []int{2}},
+	OpHashMap:     {"OpHash", []int{2}},
 
 	OpGetGlobal: {"OpGetGlobal", []int{2}},
 	OpSetGlobal: {"OpSetGlobal", []int{2}},

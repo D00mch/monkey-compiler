@@ -138,7 +138,7 @@ func (c *Compiler) Compile(node ast.Node) error {
 				return err
 			}
 		}
-		c.emit(code.OpHash, len(node.Pairs)*2)
+		c.emit(code.OpHashMap, len(node.Pairs)*2)
 	case *ast.Boolean:
 		if node.Value {
 			c.emit(code.OpTrue)

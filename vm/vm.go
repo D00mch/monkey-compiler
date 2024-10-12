@@ -70,7 +70,7 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return err
 			}
-		case code.OpHash:
+		case code.OpHashMap:
 			numElements := int(code.ReadUint16(vm.instructions[ip+1:]))
 			ip += 2
 
