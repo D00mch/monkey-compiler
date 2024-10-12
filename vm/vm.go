@@ -70,6 +70,20 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return err
 			}
+		case code.OpHash:
+			numElements := int(code.ReadUint16(vm.instructions[ip+1:]))
+			ip += 2
+
+			hashMap, err := vm.buildHashMap(vm.sp-numElements, vm.sp)
+			if err != nil {
+				return err
+			}
+			vm.sp = vm.sp - numElements
+
+			err = vm.push(hashMap)
+			if err != nil {
+				return err
+			}
 
 		case code.OpGetGlobal:
 			globalIndex := code.ReadUint16(vm.instructions[ip+1:])
@@ -138,6 +152,22 @@ func (vm *VM) buildArray(startIndex, endIndex int) object.Object {
 		elements[i] = vm.stack[startIndex+i]
 	}
 	return &object.Array{Elements: elements}
+}
+
+func (vm *VM) buildHashMap(startIndex, endIndex int) (object.Object, error) {
+	hashedPairs := make(map[object.HashKey]object.HashPair)
+	for i := startIndex; i < endIndex; i += 2 {
+		key := vm.stack[i]
+		value := vm.stack[i+1]
+		pair := object.HashPair{Key: key, Value: value}
+
+		hashKey, ok := key.(object.Hashable)
+		if !ok {
+			return nil, fmt.Errorf("unusable as hash key: %s", key.Type())
+		}
+		hashedPairs[hashKey.HashKey()] = pair
+	}
+	return &object.Hash{Pairs: hashedPairs}, nil
 }
 
 func isTruthy(obj object.Object) bool {
