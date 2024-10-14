@@ -16,6 +16,10 @@ const (
 	OpArray
 	OpHashMap
 
+	OpCall
+	OpReturnValue
+	OpReturn
+
 	OpIndex
 
 	OpGetGlobal
@@ -55,6 +59,10 @@ var definitions = map[Opcode]*Definition{
 	OpNull:     {"OpNull", []int{}},
 	OpArray:    {"OpArray", []int{2}},
 	OpHashMap:  {"OpHash", []int{2}},
+
+	OpCall:        {"OpCall", []int{}},
+	OpReturnValue: {"OpReturnValue", []int{}},
+	OpReturn:      {"OpReturn", []int{}},
 
 	OpIndex: {"OpIndex", []int{}},
 
