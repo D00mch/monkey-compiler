@@ -654,7 +654,7 @@ func TestParsingHashLiteralsWithExpressions(t *testing.T) {
 }
 
 func TestFunctionLiteralParsing(t *testing.T) {
-	input := "fn (x, y) { x + y }"
+	input := "fn (x, y) { return x + y }"
 
 	l := lexer.New(input)
 	p := New(l)
@@ -691,12 +691,13 @@ func TestFunctionLiteralParsing(t *testing.T) {
 			len(function.Body.Statements))
 	}
 
-	bodyStmt, ok := function.Body.Statements[0].(*ast.ExpressionStatement)
+	bodyStmt, ok := function.Body.Statements[0].(*ast.ReturnStatement)
 	if !ok {
 		t.Fatalf("function body stmt is not ast.ExpressionStatement. Got %T",
 			function.Body.Statements[0])
 	}
-	testInfixExpression(t, bodyStmt.Expression, "x", "+", "y")
+	
+	testInfixExpression(t, bodyStmt.ReturnValue, "x", "+", "y")
 }
 
 func TestFunctionParameterParsing(t *testing.T) {
